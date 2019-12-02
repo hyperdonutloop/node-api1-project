@@ -28,7 +28,7 @@ server.get('/api/users', (req, res) => {
 // GET - returns user object with specified id
 server.get('/api/users/:id', (req, res) => {
   const id = req.params.id;
-  
+
   db.findById(id)
     .then(users => {
       res.status(200).json(users);
@@ -40,7 +40,23 @@ server.get('/api/users/:id', (req, res) => {
     })
 })
 
-// DELETE 
+// DELETE - removes user with specified id 
+server.delete('/api/users/:id', (req, res) => {
+  const id = req.params.id;
+
+  db.remove(id)
+    .then(removed => {
+      if (!removed) {
+        res.status(200).json({ message: 'user successfully removed ', removed });
+      } else {
+        res.status(404).json({ message: 'user not found '});
+      }
+    })
+    .catch(error => {
+      console.log("error on DELETE /api/users/:id", error);
+      res.status(500).json({ errorMessage: 'error deleting the user' })
+    })
+})
 
 // PUT
 
