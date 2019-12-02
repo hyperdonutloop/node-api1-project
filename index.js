@@ -4,6 +4,8 @@ const db = require('./data/db.js');
 
 const server = express();
 
+server.use(express.json());
+
 server.get('/', (req, res) => {
   res.send({ api: 'up and running...' });
 })
@@ -12,11 +14,21 @@ server.get('/', (req, res) => {
 // POST 
 server.post('/api/users', (req, res) => {
   const userData = req.body;
-
-  db.insert(userData)
+  const name = req.body.name;
+  const bio = req.body.bio;
+  
+  if (!name || !bio) {
+    res.status(400).json({ errorMessage: 'Please provide a name and bio for the user.' })
+  } else {
+    db.insert(userData)
     .then(user => {
-      
+      res.status(201).json(user);
     })
+    .catch(error => {
+      console.log('error on POST /users', error);
+      res.status(500).json({ errorMessage: 'There was an error while saving the user to the database' })
+    })
+  }
 })
 
 // GET - returns an array of all user objects
@@ -27,8 +39,7 @@ server.get('/api/users', (req, res) => {
     })
     .catch(error => {
       console.log('error on GET /users', error);
-      res.status(500)
-      .json({ errorMessage: 'error getting list of users' });
+      res.status(500).json({ errorMessage: 'The users information could not be retrieved' });
     })
 })
 
@@ -43,8 +54,7 @@ server.get('/api/users/:id', (req, res) => {
     })
     .catch(error => {
       console.log('error on GET /users/:id', error);
-      res.status(500)
-      .json({ errorMessage: 'error getting list of users by id' });
+      res.status(404).json({ errorMessage: 'The user with the specified ID does not exist' });
     })
 })
 
