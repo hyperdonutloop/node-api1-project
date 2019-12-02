@@ -10,6 +10,14 @@ server.get('/', (req, res) => {
 // Write endpoints to perfom the following: 
 
 // POST 
+server.post('/api/users', (req, res) => {
+  const userData = req.body;
+
+  db.insert(userData)
+    .then(user => {
+      
+    })
+})
 
 // GET - returns an array of all user objects
 server.get('/api/users', (req, res) => {
