@@ -64,15 +64,15 @@ server.delete('/api/users/:id', (req, res) => {
 
   db.remove(id)
     .then(removed => {
-      if (!removed) {
+      if (removed) {
         res.status(200).json({ message: 'user successfully removed ', removed });
       } else {
-        res.status(404).json({ message: 'user not found '});
+        res.status(404).json({ message: 'The user with the specified ID does not exist'});
       }
     })
     .catch(error => {
       console.log("error on DELETE /api/users/:id", error);
-      res.status(500).json({ errorMessage: 'error deleting the user' })
+      res.status(500).json({ errorMessage: 'The user could not be removed' })
     })
 })
 
