@@ -77,6 +77,26 @@ server.delete('/api/users/:id', (req, res) => {
 })
 
 // PUT
+server.put('/api/users/:id', (req, res) => {
+  const { name, bio } = req.body;
+
+  if (!name || !bio) { //if there is no name and no bio, then return 404 message
+    res.status(400).json({ errorMessage: "Please provide a name and bio for the user." });
+  } else { // if there is a name and bio, then run the update method
+    db.update(req.params.id, req.body)
+      .then(user => { // new user is found and new info is valid, give a status of 200
+        if (user) {
+          res.status(200).json(user)
+        } else { // if that new user doesn't exist, show 404 error
+          res.status(404).json({ errorMessage: 'The user with the specified ID does not exist' });
+        }
+      })
+      .catch(error => { // if there is an error updating the user, show 500 error
+        res.status(500).json({ errorMessage: 'The user information could not be modified', error});
+      })
+  }
+  
+})
 
 const port = 4000;
 server.listen(port, () =>
